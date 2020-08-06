@@ -73,6 +73,10 @@ def initCamera(cmd, cmd_num, cd_PATH):
     # start counter
     counter = 0
 
+    # a boolean var to check the final number of cmd_num
+    # if the folder directory contains existing images
+    added = False
+
     # loop this function
     while True:
 
@@ -116,6 +120,16 @@ def initCamera(cmd, cmd_num, cd_PATH):
             # otherwise
             else:
                 PATH = os.path.join(PATH, cd_PATH)
+
+                # update counter with the total number of files
+                # in a folder directory
+                counter = len(os.listdir(PATH))
+
+                # check if the cmd_num has been added to the total number of files
+                # in a folder directory, to extend the upper limit
+                if added == False and cmd_num:
+                    cmd_num += counter
+                    added = True
 
             # check if a number of images being captured is mentioned
             if cmd_num:
@@ -173,12 +187,15 @@ def initCamera(cmd, cmd_num, cd_PATH):
 #############################
 def openFolder(FOLDER_NAME):
 
+    # clean the array container whenever the function is called
+    path_imgs = []
+
     # open a directory
     path_imageFiles = filedialog.askopenfilename(initialdir='/', title='Select File',
                                         filetypes=( ('img files', '*.png'), ('img files', '*.jpg'), ('all files', '*.*') ),
                                         multiple=True)
-
-    # make the tuple into a string, then turn it into an array of strings, ultimately get the path to img files                                      
+                                        
+    # make the tuple into a string, then turn it into an array of strings, ultimately to get the path to img files                                      
     path_imageFiles = str(path_imageFiles).split("'")
 
     # when split the single quotes, total length of the array variable is now doubled
@@ -228,14 +245,14 @@ def openFolder(FOLDER_NAME):
             os.startfile(PATH)
 
             # write each frame into an image file to the folder directory
-            cv.imwrite(os.path.join(PATH, f'{path_img}.png'), blur)
+            cv.imwrite(os.path.join(PATH, f'{path_img + 1}.png'), blur)
 
         # otherwise
         else: 
             os.startfile(PATH)
 
             # write each frame into an image file to the folder directory
-            cv.imwrite(os.path.join(PATH, f'{path_img}.png'), blur)
+            cv.imwrite(os.path.join(PATH, f'{path_img + 1}.png'), blur)
 #############################
 
 
